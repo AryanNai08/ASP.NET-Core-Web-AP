@@ -6,14 +6,14 @@
             new Student
             {
                 Id = 1,
-                Studentname = "Aryan Nai",
+                Studentname = "AryanNai",
                 Email = "aryannai841@gmail.com",
                 Address = "Ahmedabad,Gujarat"
             },
             new Student
             {
                 Id = 2,
-                Studentname = "Kartik Ahir",
+                Studentname = "KartikAhir",
                 Email = "kartik@gmail.com",
                 Address = "Surat,Gujarat"
             } };
