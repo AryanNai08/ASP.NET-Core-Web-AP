@@ -14,22 +14,7 @@ namespace CollegeApi.Controllers
         //first end point
         public IEnumerable<Student> GetStudent()
         {
-            return new List<Student>(){
-            new Student
-            {
-                Id = 1,
-                Studentname = "Aryan Nai",
-                Email = "aryannai841@gmail.com",
-                Address = "Ahmedabad,Gujarat"
-            },
-            new Student
-            {
-                Id = 2,
-                Studentname = "Kartik Ahir",
-                Email = "kartik@gmail.com",
-                Address = "Surat,Gujarat"
-            } };
-
+            return CollegeRepository.Students;
 
         }
     }
