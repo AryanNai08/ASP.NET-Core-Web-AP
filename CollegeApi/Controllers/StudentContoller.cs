@@ -19,8 +19,34 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         //Get all student details
-        public ActionResult<IEnumerable<Student>> GetStudent()
+        public ActionResult<IEnumerable<StudentDTO>> GetStudent()
         {
+            //without linq
+
+            //var students = new List<StudentDTO>();
+            //foreach(var item in CollegeRepository.Students)
+            //{
+            //    StudentDTO obj = new StudentDTO()
+            //    {
+            //        Id = item.Id,
+            //        Studentname=item.Studentname,
+            //        Address=item.Address,
+            //        Email=item.Email
+            //    };
+            //    students.Add(obj);
+            //}
+
+
+            //with linq
+
+            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+            {
+                Id = s.Id,
+                Studentname = s.Studentname,
+                Address = s.Address,
+                Email = s.Email
+            });
+
             //ok-200-success
             return Ok(CollegeRepository.Students);
 
@@ -36,7 +62,7 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<Student> GetStudentById(int id) 
+        public ActionResult<StudentDTO> GetStudentById(int id) 
         {
 
             if (id <= 0)
@@ -51,10 +77,17 @@ namespace CollegeApi.Controllers
             {
                 return NotFound("Student not found");
             }
-            else
+
+            var studentDTO = new StudentDTO
             {
-                return Ok(Student);
-            }
+                Id = Student.Id,
+                Studentname = Student.Studentname,
+                Email = Student.Email,
+                Address = Student.Address
+            };
+
+                return Ok(studentDTO);
+            
             
 
         }
@@ -66,7 +99,7 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public ActionResult<Student> GetStudentByName(string name)
+        public ActionResult<StudentDTO> GetStudentByName(string name)
         {
 
                       
@@ -86,10 +119,15 @@ namespace CollegeApi.Controllers
             {
                 return NotFound("Student not found");
             }
-            else
+            var studentDTO = new StudentDTO
             {
-                return Ok(Student);
-            }
+                Id = Student.Id,
+                Studentname = Student.Studentname,
+                Email = Student.Email,
+                Address = Student.Address
+            };
+            return Ok(studentDTO);
+            
 
         }
 
