@@ -16,9 +16,10 @@ namespace CollegeApi.Controllers
         //api/student/All
         [Route("All", Name = "GetAllStudents")]
         //Get all student details
-        public IEnumerable<Student> GetStudent()
+        public ActionResult<IEnumerable<Student>> GetStudent()
         {
-            return CollegeRepository.Students;
+            //ok-200-success
+            return Ok(CollegeRepository.Students);
 
         }
 
@@ -26,17 +27,34 @@ namespace CollegeApi.Controllers
 
         //Get  single student details by id
         [HttpGet]
-        [Route("{id}", Name = "GetStudentsByid")]
-        public Student GetStudentById(int id) 
+        [Route("{id:int}", Name = "GetStudentsByid")]
+        public ActionResult<Student> GetStudentById(int id) 
         {
-            return CollegeRepository.Students.Where(x=>x.Id==id).FirstOrDefault();
+
+            if (id <= 0)
+            {
+                //bad request-400-client side error
+                return BadRequest();
+            }
+
+            var Student = CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
+
+            if (Student == null)
+            {
+                return NotFound("Student not found");
+            }
+            else
+            {
+                return Ok(Student);
+            }
+            
 
         }
 
 
         //Get  single student details by Name
         [HttpGet("{name:alpha}", Name = "GetStudentByName")]
-        public Student GetStudentByName(string name)
+        public ActionResult<Student> GetStudentByName(string name)
         {
 
             //return CollegeRepository.Students.Where(x => x.Studentname == name).FirstOrDefault();
@@ -45,19 +63,54 @@ namespace CollegeApi.Controllers
 
             //above 2 are other ways 
 
-            return CollegeRepository.Students
+            
+
+
+            if (string.IsNullOrEmpty(name))
+            {
+                //bad request-400-client side error
+                return BadRequest();
+            }
+
+            var Student = CollegeRepository.Students
                 .Where(x => x.Studentname.ToLower().Contains(name.ToLower()))
                 .FirstOrDefault();
+
+            if (Student == null)
+            {
+                return NotFound("Student not found");
+            }
+            else
+            {
+                return Ok(Student);
+            }
 
         }
 
         //Get  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
-        public bool DeleteStudentById(int id)
+        public ActionResult<bool> DeleteStudentById(int id)
         {
-            var sid=CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
+            //var sid=CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
 
-            return CollegeRepository.Students.Remove(sid);
+            //return CollegeRepository.Students.Remove(sid);
+
+            if (id <= 0)
+            {
+                //bad request-400-client side error
+                return BadRequest();
+            }
+
+            var Student = CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
+
+            if (Student == null)
+            {
+                return NotFound("Student id not found");
+            }
+            else
+            {
+                return Ok(true);
+            }
 
         }
     }
