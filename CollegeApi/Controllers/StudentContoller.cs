@@ -15,6 +15,9 @@ namespace CollegeApi.Controllers
         [HttpGet]
         //api/student/All
         [Route("All", Name = "GetAllStudents")]
+
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         //Get all student details
         public ActionResult<IEnumerable<Student>> GetStudent()
         {
@@ -28,6 +31,11 @@ namespace CollegeApi.Controllers
         //Get  single student details by id
         [HttpGet]
         [Route("{id:int}", Name = "GetStudentsByid")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public ActionResult<Student> GetStudentById(int id) 
         {
 
@@ -54,16 +62,14 @@ namespace CollegeApi.Controllers
 
         //Get  single student details by Name
         [HttpGet("{name:alpha}", Name = "GetStudentByName")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<Student> GetStudentByName(string name)
         {
 
-            //return CollegeRepository.Students.Where(x => x.Studentname == name).FirstOrDefault();
-            //return CollegeRepository.Students
-            //    .Where(x => x.Studentname.ToLower().Contains(name.ToLower())).ToList();
-
-            //above 2 are other ways 
-
-            
+                      
 
 
             if (string.IsNullOrEmpty(name))
@@ -89,11 +95,14 @@ namespace CollegeApi.Controllers
 
         //Get  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<bool> DeleteStudentById(int id)
         {
-            //var sid=CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
-
-            //return CollegeRepository.Students.Remove(sid);
+            
 
             if (id <= 0)
             {
