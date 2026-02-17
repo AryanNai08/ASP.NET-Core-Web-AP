@@ -11,12 +11,14 @@ namespace CollegeApi.Controllers
     public class StudentController : ControllerBase
     {
 
-        private readonly IMyLogger _myLogger;
-        public StudentController(IMyLogger myLogger)
+        private readonly ILogger<StudentController> _Logger;
+
+        public StudentController(ILogger<StudentController> logger)
         {
-            _myLogger = myLogger;
+            _Logger = logger;
         }
 
+       
 
         //first end point
         //request method id endpoint
@@ -47,6 +49,7 @@ namespace CollegeApi.Controllers
 
             //with linq
 
+            _Logger.LogInformation("GetStudents method started ");
             var students = CollegeRepository.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
@@ -75,6 +78,7 @@ namespace CollegeApi.Controllers
 
             if (id <= 0)
             {
+                _Logger.LogWarning("Bad request");
                 //bad request-400-client side error
                 return BadRequest();
             }
@@ -83,6 +87,7 @@ namespace CollegeApi.Controllers
 
             if (Student == null)
             {
+                _Logger.LogError("Student not found with given id");
                 return NotFound("Student not found");
             }
 
