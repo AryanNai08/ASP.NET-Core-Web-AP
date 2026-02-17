@@ -11,7 +11,14 @@ builder.Services.AddSwaggerGen();
 
 
 
-builder.Services.AddScoped<IMyLogger,LogToFile>();
+// Singleton: Same instance throughout the app
+//builder.Services.AddSingleton<IMyLogger, LogToFile>();
+
+// Scoped: New instance per HTTP request
+builder.Services.AddScoped<IMyLogger, LogToDB>();
+
+// Transient: New instance every time DI container is asked
+//builder.Services.AddTransient<IMyLogger, LogToServerMemory>();
 
 
 var app = builder.Build();
