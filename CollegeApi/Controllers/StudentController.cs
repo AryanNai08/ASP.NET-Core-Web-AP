@@ -165,6 +165,39 @@ namespace CollegeApi.Controllers
 
         }
 
+
+        //update student api
+        [HttpPut]
+        [Route("Update")]
+        //api/student/update
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateStudent([FromBody] StudentDTO model)
+        {
+            if(model==null || model.Id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var existingStudent =CollegeRepository.Students.Where(s=>s.Id==model.Id).FirstOrDefault();
+
+            if (existingStudent == null)
+            {
+                return NotFound();
+            }
+
+            existingStudent.Studentname = model.Studentname;
+            existingStudent.Email = model.Studentname;
+            existingStudent.Address = model.Address;
+
+            return NoContent();
+        }
+
+
+
+
         //Get  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
 
