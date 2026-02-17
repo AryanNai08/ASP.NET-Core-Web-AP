@@ -1,5 +1,6 @@
 ﻿using CollegeApi.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CollegeApi.Controllers
@@ -191,6 +192,54 @@ namespace CollegeApi.Controllers
             existingStudent.Studentname = model.Studentname;
             existingStudent.Email = model.Studentname;
             existingStudent.Address = model.Address;
+
+            return NoContent();
+        }
+
+
+
+
+
+        //updatepartial student api
+        [HttpPatch]
+        [Route("{id:int}/UpdatePartial")]
+        //api/student/id/updatepartial
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult UpdateStudentpartial(int id,[FromBody] JsonPatchDocument<StudentDTO> patchDocument)
+        {
+            if (patchDocument == null || id <= 0)
+            {
+                return BadRequest();
+            }
+
+            var existingStudent = CollegeRepository.Students.Where(s => s.Id == id).FirstOrDefault();
+
+            if (existingStudent == null)
+            {
+                return NotFound();
+            }
+
+            var studentDTO = new StudentDTO()
+            {
+                Id = existingStudent.Id,
+                Studentname = existingStudent.Studentname,
+                Email = existingStudent.Email,
+                Address = existingStudent.Address,
+            };
+
+            patchDocument.ApplyTo(studentDTO,ModelState);
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            existingStudent.Studentname = studentDTO.Studentname;
+            existingStudent.Email = studentDTO.Studentname;
+            existingStudent.Address = studentDTO.Address;
 
             return NoContent();
         }
