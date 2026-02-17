@@ -46,10 +46,10 @@ namespace CollegeApi.Controllers
             //    students.Add(obj);
             //}
 
-
+            _Logger.LogInformation("GetStudents method started ");
             //with linq
 
-            _Logger.LogInformation("GetStudents method started ");
+
             var students = CollegeRepository.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
@@ -259,7 +259,7 @@ namespace CollegeApi.Controllers
 
 
 
-        //Get  single student details by id
+        //delete  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
         //api/student/delete/id
         [ProducesResponseType(StatusCodes.Status200OK)]
