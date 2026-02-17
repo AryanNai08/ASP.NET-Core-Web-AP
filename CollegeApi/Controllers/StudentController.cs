@@ -56,7 +56,7 @@ namespace CollegeApi.Controllers
 
         //Get  single student details by id
         [HttpGet]
-        [Route("{id:int}", Name = "GetStudentsByid")]
+        [Route("{id:int}", Name = "GetStudentByid")]
 
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -135,7 +135,7 @@ namespace CollegeApi.Controllers
         [HttpPost]
         [Route("Create")]
         //api/student/create
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public ActionResult<StudentDTO> CreateStudent([FromBody]StudentDTO model)
@@ -157,9 +157,11 @@ namespace CollegeApi.Controllers
 
             CollegeRepository.Students.Add(student);
 
-            model.Id = newid;
-
-            return Ok(model);
+            model.Id = student.Id;
+            //link/location of newly created data
+            //status code=201
+            return CreatedAtRoute("GetStudentById", new {id=model.Id},model);
+            
 
         }
 
