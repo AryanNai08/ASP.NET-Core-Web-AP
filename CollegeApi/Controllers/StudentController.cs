@@ -1,4 +1,5 @@
 ﻿using CollegeApi.Models;
+using CollegeApi.MyLogging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +10,12 @@ namespace CollegeApi.Controllers
     [ApiController]//Marks the class as a Web API controller
     public class StudentController : ControllerBase
     {
+
+        private readonly IMyLogger _myLogger;
+        public StudentController(IMyLogger myLogger)
+        {
+            _myLogger = myLogger;
+        }
 
 
         //first end point
@@ -249,7 +256,7 @@ namespace CollegeApi.Controllers
 
         //Get  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
-
+        //api/student/delete/id
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
