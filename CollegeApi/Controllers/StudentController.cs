@@ -6,7 +6,7 @@ namespace CollegeApi.Controllers
 {
     [Route("api/[controller]")] //Defines the base URL route
     [ApiController]//Marks the class as a Web API controller
-    public class StudentContoller : ControllerBase
+    public class StudentController : ControllerBase
     {
 
 
@@ -62,7 +62,7 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public ActionResult<StudentDTO> GetStudentById(int id) 
+        public ActionResult<StudentDTO> GetStudentById(int id)
         {
 
             if (id <= 0)
@@ -86,9 +86,9 @@ namespace CollegeApi.Controllers
                 Address = Student.Address
             };
 
-                return Ok(studentDTO);
-            
-            
+            return Ok(studentDTO);
+
+
 
         }
 
@@ -102,7 +102,7 @@ namespace CollegeApi.Controllers
         public ActionResult<StudentDTO> GetStudentByName(string name)
         {
 
-                      
+
 
 
             if (string.IsNullOrEmpty(name))
@@ -127,7 +127,39 @@ namespace CollegeApi.Controllers
                 Address = Student.Address
             };
             return Ok(studentDTO);
-            
+
+
+        }
+
+        //create student record
+        [HttpPost]
+        [Route("Create")]
+        //api/student/create
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<StudentDTO> CreateStudent([FromBody]StudentDTO model)
+        {
+            if (model == null) 
+            {
+                return BadRequest();
+            }
+
+            int newid=CollegeRepository.Students.LastOrDefault().Id+1;
+
+            Student student = new Student
+            {
+                Id = newid,
+                Studentname = model.Studentname,
+                Email = model.Email,
+                Address = model.Address
+            };
+
+            CollegeRepository.Students.Add(student);
+
+            model.Id = newid;
+
+            return Ok(model);
 
         }
 
