@@ -1,6 +1,19 @@
 using CollegeApi.MyLogging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.File("Log/log.txt", rollingInterval: RollingInterval.Minute)
+    .CreateLogger();
+
+//use serilog along with built-in logger
+//builder.Logging.AddSerilog();
+
+
+//use this line to override the built-in logger
+//builder.Host.UseSerilog();
 
 // Add services to the container.
 

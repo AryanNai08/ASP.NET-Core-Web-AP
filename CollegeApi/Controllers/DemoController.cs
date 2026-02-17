@@ -16,18 +16,24 @@ namespace CollegeApi.Controllers
         //}
 
         //2.Loosely coupled
-        private readonly IMyLogger _myLogger;
-        public DemoController(IMyLogger myLogger)
+        //private readonly IMyLogger _myLogger;
+        private readonly ILogger<DemoController> _logger;
+        public DemoController(ILogger<DemoController> logger)
         {
-            _myLogger = myLogger;
+            _logger = logger;
         }
-
 
         [HttpGet]
         public ActionResult Index()
         {
-            _myLogger.Log("Index method started");
+            _logger.LogTrace("Trace log");
+            _logger.LogDebug("Debug log");
+            _logger.LogInformation("Info log");
+            _logger.LogWarning("Warning log");
+            _logger.LogError("Error log");
+            _logger.LogCritical("Critical log");
+
             return Ok();
         }
-       }
+    }
 }
