@@ -17,5 +17,7 @@ namespace CollegeApi.Models
 
         [Required (ErrorMessage = "Student Address is required")]
         public String Address { get; set; }
+
+        public DateTime DOB { get; set; }
     }
 }

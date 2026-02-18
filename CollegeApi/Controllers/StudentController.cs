@@ -1,4 +1,5 @@
-﻿using CollegeApi.Models;
+﻿using CollegeApi.Data;
+using CollegeApi.Models;
 using CollegeApi.MyLogging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -12,9 +13,10 @@ namespace CollegeApi.Controllers
     {
 
         private readonly ILogger<StudentController> _Logger;
-
-        public StudentController(ILogger<StudentController> logger)
+        private readonly CollegeDBContext _dbContext;
+        public StudentController(ILogger<StudentController> logger,CollegeDBContext dbContext)
         {
+            _dbContext = dbContext;
             _Logger = logger;
         }
 
@@ -34,7 +36,7 @@ namespace CollegeApi.Controllers
             //without linq
 
             //var students = new List<StudentDTO>();
-            //foreach(var item in CollegeRepository.Students)
+            //foreach(var item in _dbContext.Students)
             //{
             //    StudentDTO obj = new StudentDTO()
             //    {
@@ -50,16 +52,17 @@ namespace CollegeApi.Controllers
             //with linq
 
 
-            var students = CollegeRepository.Students.Select(s => new StudentDTO()
+            var students = _dbContext.Students.Select(s => new StudentDTO()
             {
                 Id = s.Id,
                 Studentname = s.Studentname,
                 Address = s.Address,
-                Email = s.Email
+                Email = s.Email,
+                DOB=s.DOB
             });
 
             //ok-200-success
-            return Ok(CollegeRepository.Students);
+            return Ok(students);
 
         }
 
@@ -83,7 +86,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
+            var Student = _dbContext.Students.Where(x => x.Id == id).FirstOrDefault();
 
             if (Student == null)
             {
@@ -124,7 +127,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = CollegeRepository.Students
+            var Student = _dbContext.Students
                 .Where(x => x.Studentname.ToLower().Contains(name.ToLower()))
                 .FirstOrDefault();
 
@@ -158,22 +161,24 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            int newid=CollegeRepository.Students.LastOrDefault().Id+1;
+            
 
             Student student = new Student
             {
-                Id = newid,
+                
                 Studentname = model.Studentname,
                 Email = model.Email,
-                Address = model.Address
+                Address = model.Address,
+                 DOB = model.DOB
             };
 
-            CollegeRepository.Students.Add(student);
+            _dbContext.Students.Add(student);
+            _dbContext.SaveChanges();
 
             model.Id = student.Id;
             //link/location of newly created data
             //status code=201
-            return CreatedAtRoute("GetStudentById", new {id=model.Id},model);
+            return CreatedAtRoute("GetStudentByid", new {id=model.Id},model);
             
 
         }
@@ -194,7 +199,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent =CollegeRepository.Students.Where(s=>s.Id==model.Id).FirstOrDefault();
+            var existingStudent =_dbContext.Students.Where(s=>s.Id==model.Id).FirstOrDefault();
 
             if (existingStudent == null)
             {
@@ -202,8 +207,11 @@ namespace CollegeApi.Controllers
             }
 
             existingStudent.Studentname = model.Studentname;
-            existingStudent.Email = model.Studentname;
+            existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
+            existingStudent.DOB = model.DOB;
+
+            _dbContext.SaveChanges();
 
             return NoContent();
         }
@@ -227,7 +235,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent = CollegeRepository.Students.Where(s => s.Id == id).FirstOrDefault();
+            var existingStudent = _dbContext.Students.Where(s => s.Id == id).FirstOrDefault();
 
             if (existingStudent == null)
             {
@@ -240,6 +248,7 @@ namespace CollegeApi.Controllers
                 Studentname = existingStudent.Studentname,
                 Email = existingStudent.Email,
                 Address = existingStudent.Address,
+                DOB=existingStudent.DOB
             };
 
             patchDocument.ApplyTo(studentDTO,ModelState);
@@ -250,8 +259,11 @@ namespace CollegeApi.Controllers
             }
 
             existingStudent.Studentname = studentDTO.Studentname;
-            existingStudent.Email = studentDTO.Studentname;
+            existingStudent.Email = studentDTO.Email;
             existingStudent.Address = studentDTO.Address;
+            existingStudent.DOB = studentDTO.DOB;
+
+            _dbContext.SaveChanges();
 
             return NoContent();
         }
@@ -276,7 +288,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = CollegeRepository.Students.Where(x => x.Id == id).FirstOrDefault();
+            var Student = _dbContext.Students.Where(x => x.Id == id).FirstOrDefault();
 
             if (Student == null)
             {
@@ -284,6 +296,8 @@ namespace CollegeApi.Controllers
             }
             else
             {
+                _dbContext.Students.Remove(Student);
+                _dbContext.SaveChanges();
                 return Ok(true);
             }
 
