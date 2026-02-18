@@ -1,4 +1,5 @@
-﻿using CollegeApi.Data;
+﻿using AutoMapper;
+using CollegeApi.Data;
 using CollegeApi.Models;
 using CollegeApi.MyLogging;
 using Microsoft.AspNetCore.Http;
@@ -15,10 +16,13 @@ namespace CollegeApi.Controllers
 
         private readonly ILogger<StudentController> _Logger;
         private readonly CollegeDBContext _dbContext;
-        public StudentController(ILogger<StudentController> logger,CollegeDBContext dbContext)
+        private readonly IMapper _mapper;
+        public StudentController(ILogger<StudentController> logger,CollegeDBContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _Logger = logger;
+            _mapper = mapper;
+
         }
 
        
@@ -53,17 +57,11 @@ namespace CollegeApi.Controllers
             //with linq
 
 
-            var students =await  _dbContext.Students.Select(s => new StudentDTO()
-            {
-                Id = s.Id,
-                Studentname = s.Studentname,
-                Address = s.Address,
-                Email = s.Email,
-                DOB = s.DOB.ToShortDateString(),
-            }).ToListAsync();
+            var students = await _dbContext.Students.ToListAsync();
 
+            var studentDTOData = _mapper.Map<List<StudentDTO>>(students);
             //ok-200-success
-            return Ok(students);
+            return Ok(studentDTOData);
 
         }
 
@@ -95,14 +93,7 @@ namespace CollegeApi.Controllers
                 return NotFound("Student not found");
             }
 
-            var studentDTO = new StudentDTO
-            {
-                Id = Student.Id,
-                Studentname = Student.Studentname,
-                Email = Student.Email,
-                Address = Student.Address,
-                DOB = Student.DOB.ToShortDateString()
-            };
+            var studentDTO = _mapper.Map<StudentDTO>(Student);
 
             return Ok(studentDTO);
 
@@ -137,14 +128,8 @@ namespace CollegeApi.Controllers
             {
                 return NotFound("Student not found");
             }
-            var studentDTO = new StudentDTO
-            {
-                Id = Student.Id,
-                Studentname = Student.Studentname,
-                Email = Student.Email,
-                Address = Student.Address,
-                DOB = Student.DOB.ToShortDateString()
-            };
+            var studentDTO = _mapper.Map<StudentDTO>(Student);
+
             return Ok(studentDTO);
 
 
@@ -157,31 +142,24 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult<StudentDTO>> CreateStudent([FromBody]StudentDTO model)
+        public async Task<ActionResult<StudentDTO>> CreateStudent([FromBody]StudentDTO dto)
         {
-            if (model == null) 
+            if (dto == null) 
             {
                 return BadRequest();
             }
 
-            
 
-            Student student = new Student
-            {
-                
-                Studentname = model.Studentname,
-                Email = model.Email,
-                Address = model.Address,
-                 DOB = Convert.ToDateTime(model.DOB),
-            };
+
+            Student student = _mapper.Map<Student>(dto);
 
           await   _dbContext.Students.AddAsync(student);
            await _dbContext.SaveChangesAsync();
 
-            model.Id = student.Id;
+            dto.Id = student.Id;
             //link/location of newly created data
             //status code=201
-            return CreatedAtRoute("GetStudentByid", new {id=model.Id},model);
+            return CreatedAtRoute("GetStudentByid", new {id=dto.Id},dto);
             
 
         }
@@ -195,14 +173,14 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> UpdateStudentAsync([FromBody] StudentDTO model)
+        public async Task<ActionResult> UpdateStudentAsync([FromBody] StudentDTO dto)
         {
-            if(model==null || model.Id <= 0)
+            if(dto == null || dto.Id <= 0)
             {
                 return BadRequest();
             }
 
-            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == model.Id).FirstOrDefaultAsync();
+            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == dto.Id).FirstOrDefaultAsync();
 
             if (existingStudent == null)
             {
@@ -217,14 +195,7 @@ namespace CollegeApi.Controllers
 
 
             //using asnotracking
-            var newrecord = new Student()
-            {
-                Id = existingStudent.Id,
-                Studentname = model.Studentname,
-                Email = model.Email,
-                Address = model.Address,
-                DOB = Convert.ToDateTime(model.DOB),
-            };
+            var newrecord = _mapper.Map<Student>(dto);
 
             _dbContext.Students.Update(newrecord);
 
@@ -259,15 +230,7 @@ namespace CollegeApi.Controllers
                 return NotFound();
             }
 
-            var studentDTO = new StudentDTO()
-            {
-                Id = existingStudent.Id,
-                Studentname = existingStudent.Studentname,
-                Email = existingStudent.Email,
-                Address = existingStudent.Address,
-                DOB= existingStudent.DOB.ToShortDateString()
-            };
-
+            var studentDTO = _mapper.Map<StudentDTO>(existingStudent);
             patchDocument.ApplyTo(studentDTO,ModelState);
 
             if (!ModelState.IsValid)
@@ -275,10 +238,10 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            existingStudent.Studentname = studentDTO.Studentname;
-            existingStudent.Email = studentDTO.Email;
-            existingStudent.Address = studentDTO.Address;
-            existingStudent.DOB = Convert.ToDateTime(studentDTO.DOB); ;
+             //_mapper.Map<Student>(studentDTO,existingStudent)
+
+                _mapper.Map(studentDTO, existingStudent);
+
 
             await _dbContext.SaveChangesAsync();
 

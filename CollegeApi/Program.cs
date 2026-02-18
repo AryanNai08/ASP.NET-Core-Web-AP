@@ -1,3 +1,4 @@
+using CollegeApi.Configurations;
 using CollegeApi.Data;
 using CollegeApi.MyLogging;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +32,11 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 // 🔵 Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+
+//auto mapper configuration
+builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 
 
