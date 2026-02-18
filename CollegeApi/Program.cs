@@ -22,8 +22,8 @@ Log.Logger = new LoggerConfiguration()
 //db configuration
 builder.Services.AddDbContext<CollegeDBContext>(options =>
 {
-options.UseSqlServer(builder.Configuration.GetConnectionString("CollegeDBConnection"));
-
+    options.UseSqlServer(builder.Configuration.GetConnectionString("CollegeAppDBConnection"));
+});
 
 // Add services to the container.
 
