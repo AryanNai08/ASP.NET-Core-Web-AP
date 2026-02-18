@@ -1,4 +1,6 @@
+using CollegeApi.Data;
 using CollegeApi.MyLogging;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,14 @@ Log.Logger = new LoggerConfiguration()
 
 //use this line to override the built-in logger
 //builder.Host.UseSerilog();
+
+
+
+//db configuration
+builder.Services.AddDbContext<CollegeDBContext>(options =>
+{
+options.UseSqlServer(builder.Configuration.GetConnectionString("CollegeDBConnection"));
+
 
 // Add services to the container.
 
