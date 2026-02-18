@@ -58,8 +58,8 @@ namespace CollegeApi.Controllers
                 Studentname = s.Studentname,
                 Address = s.Address,
                 Email = s.Email,
-                DOB=s.DOB
-            });
+                DOB = s.DOB.ToShortDateString(),
+            }).ToList();
 
             //ok-200-success
             return Ok(students);
@@ -99,7 +99,8 @@ namespace CollegeApi.Controllers
                 Id = Student.Id,
                 Studentname = Student.Studentname,
                 Email = Student.Email,
-                Address = Student.Address
+                Address = Student.Address,
+                DOB = Student.DOB.ToShortDateString()
             };
 
             return Ok(studentDTO);
@@ -140,7 +141,8 @@ namespace CollegeApi.Controllers
                 Id = Student.Id,
                 Studentname = Student.Studentname,
                 Email = Student.Email,
-                Address = Student.Address
+                Address = Student.Address,
+                DOB = Student.DOB.ToShortDateString()
             };
             return Ok(studentDTO);
 
@@ -169,7 +171,7 @@ namespace CollegeApi.Controllers
                 Studentname = model.Studentname,
                 Email = model.Email,
                 Address = model.Address,
-                 DOB = model.DOB
+                 DOB = Convert.ToDateTime(model.DOB),
             };
 
             _dbContext.Students.Add(student);
@@ -209,7 +211,7 @@ namespace CollegeApi.Controllers
             existingStudent.Studentname = model.Studentname;
             existingStudent.Email = model.Email;
             existingStudent.Address = model.Address;
-            existingStudent.DOB = model.DOB;
+            existingStudent.DOB = Convert.ToDateTime(model.DOB);
 
             _dbContext.SaveChanges();
 
@@ -248,7 +250,7 @@ namespace CollegeApi.Controllers
                 Studentname = existingStudent.Studentname,
                 Email = existingStudent.Email,
                 Address = existingStudent.Address,
-                DOB=existingStudent.DOB
+                DOB= existingStudent.DOB.ToShortDateString()
             };
 
             patchDocument.ApplyTo(studentDTO,ModelState);
@@ -261,7 +263,7 @@ namespace CollegeApi.Controllers
             existingStudent.Studentname = studentDTO.Studentname;
             existingStudent.Email = studentDTO.Email;
             existingStudent.Address = studentDTO.Address;
-            existingStudent.DOB = studentDTO.DOB;
+            existingStudent.DOB = Convert.ToDateTime(studentDTO.DOB); ;
 
             _dbContext.SaveChanges();
 
