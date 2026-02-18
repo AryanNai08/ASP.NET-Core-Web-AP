@@ -32,6 +32,13 @@ namespace CollegeApi.Data
                     DOB = new DateTime(2002, 8, 3)
                 }
             );
+            modelBuilder.Entity<Student>(entity =>
+            {
+                entity.Property(n=>n.Studentname).IsRequired().HasMaxLength(250);
+                entity.Property(n=>n.Address).IsRequired(false).HasMaxLength(500);
+                entity.Property(n => n.Email).IsRequired().HasMaxLength(250);
+            });
+
         }
 
     }
