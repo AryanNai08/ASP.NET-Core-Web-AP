@@ -9,5 +9,30 @@ namespace CollegeApi.Data
 
         }
         DbSet<Student> Students { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Student>().HasData
+                (
+                new Student
+                {
+                    Id = 1,
+                    Studentname = "Aryan",
+                    Address = "India",
+                    Email = "aryan@gmail.com",
+                    DOB = new DateTime(2003, 9, 3)
+                },
+
+                new Student
+                {
+                    Id = 2,
+                    Studentname = "kartik",
+                    Address = "India",
+                    Email = "k@gmail.com",
+                    DOB = new DateTime(2002, 8, 3)
+                }
+            );
+        }
+
     }
 }
