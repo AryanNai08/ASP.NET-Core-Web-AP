@@ -21,6 +21,11 @@ namespace CollegeApi.Data.Config
                 new Student { Id = 1, Studentname="Aryan",Email="aryan@gmail.com",DOB=new DateTime(2004,9,3)},
                  new Student { Id = 2, Studentname="kartik",Email="k@gmail.com",DOB=new DateTime(2004,9,3)}
             });
+
+
+
+            //forigen key configuration in student table
+            builder.HasOne(n=>n.Department).WithMany(n=>n.Students).HasForeignKey(n=>n.DepartmentId).HasConstraintName("FK_Students_Department");
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using CollegeApi.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace CollegeApi.Repository
+namespace CollegeApi.Data.Repository
 {
     public class StudentRepository :CollegeRepository<Student>,  IStudentRepository
     {

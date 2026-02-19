@@ -1,7 +1,7 @@
 using CollegeApi.Configurations;
 using CollegeApi.Data;
+using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
-using CollegeApi.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 

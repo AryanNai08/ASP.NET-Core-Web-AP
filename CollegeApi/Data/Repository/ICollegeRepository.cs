@@ -1,7 +1,7 @@
 ﻿using CollegeApi.Data;
 using System.Linq.Expressions;
 
-namespace CollegeApi.Repository
+namespace CollegeApi.Data.Repository
 {
     public interface ICollegeRepository<T>
     {

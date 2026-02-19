@@ -13,5 +13,11 @@ namespace CollegeApi.Data
         public String Address { get; set; }
 
         public DateTime DOB { get; set; }
+
+
+
+        //Department table column for forigen key creation
+        public int? DepartmentId { get; set; }
+        public virtual Department? Department { get; set; }
     }
 }

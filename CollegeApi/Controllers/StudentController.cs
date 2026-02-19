@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using CollegeApi.Data;
+using CollegeApi.Data.Repository;
 using CollegeApi.Models;
 using CollegeApi.MyLogging;
-using CollegeApi.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;

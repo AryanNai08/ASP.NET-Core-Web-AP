@@ -1,6 +1,6 @@
 ﻿using CollegeApi.Data;
 
-namespace CollegeApi.Repository
+namespace CollegeApi.Data.Repository
 {
     public interface IStudentRepository : ICollegeRepository<Student>
     {

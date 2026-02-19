@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace CollegeApi.Repository
+namespace CollegeApi.Data.Repository
 {
     public class CollegeRepository<T> : ICollegeRepository<T> where T : class
     {
