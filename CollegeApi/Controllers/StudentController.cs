@@ -15,11 +15,11 @@ namespace CollegeApi.Controllers
     {
 
         private readonly ILogger<StudentController> _Logger;
-        private readonly CollegeDBContext _dbContext;
+        
         private readonly IMapper _mapper;
-        public StudentController(ILogger<StudentController> logger,CollegeDBContext dbContext, IMapper mapper)
+        public StudentController(ILogger<StudentController> logger, IMapper mapper)
         {
-            _dbContext = dbContext;
+            
             _Logger = logger;
             _mapper = mapper;
 
