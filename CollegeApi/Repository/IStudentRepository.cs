@@ -6,7 +6,7 @@ namespace CollegeApi.Repository
     {
         Task<List<Student>> GetAllAsync();
 
-        Task<Student> GetByIDAsync(int id);
+        Task<Student> GetByIDAsync(int id, bool useNotracking=false);
 
         Task<Student> GetByNameAsync(string name);
 
@@ -14,7 +14,7 @@ namespace CollegeApi.Repository
 
         Task<int> UpdateAsync(Student student);
 
-        Task<bool> DeleteAsync(int id);
+        Task<bool> DeleteAsync(Student student);
 
     }
 }

@@ -2,6 +2,7 @@
 using CollegeApi.Data;
 using CollegeApi.Models;
 using CollegeApi.MyLogging;
+using CollegeApi.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,14 @@ namespace CollegeApi.Controllers
         private readonly ILogger<StudentController> _Logger;
         
         private readonly IMapper _mapper;
-        public StudentController(ILogger<StudentController> logger, IMapper mapper)
+
+        private readonly IStudentRepository _studentRepository;
+        public StudentController(ILogger<StudentController> logger, IMapper mapper, IStudentRepository studentRepository)
         {
             
             _Logger = logger;
             _mapper = mapper;
+            _studentRepository = studentRepository;
 
         }
 
@@ -57,7 +61,7 @@ namespace CollegeApi.Controllers
             //with linq
 
 
-            var students = await _dbContext.Students.ToListAsync();
+            var students = await _studentRepository.GetAllAsync();
 
             var studentDTOData = _mapper.Map<List<StudentDTO>>(students);
             //ok-200-success
@@ -85,7 +89,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _dbContext.Students.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var Student = await _studentRepository.GetByIDAsync(id);
 
             if (Student == null)
             {
@@ -120,9 +124,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _dbContext.Students
-                .Where(x => x.Studentname.ToLower().Contains(name.ToLower()))
-                .FirstOrDefaultAsync();
+            var Student = await _studentRepository.GetByNameAsync(name);
 
             if (Student == null)
             {
@@ -153,10 +155,9 @@ namespace CollegeApi.Controllers
 
             Student student = _mapper.Map<Student>(dto);
 
-          await   _dbContext.Students.AddAsync(student);
-           await _dbContext.SaveChangesAsync();
+            var id=await _studentRepository.CreateAsync(student);
 
-            dto.Id = student.Id;
+            dto.Id = id;
             //link/location of newly created data
             //status code=201
             return CreatedAtRoute("GetStudentByid", new {id=dto.Id},dto);
@@ -180,26 +181,17 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent = await _dbContext.Students.AsNoTracking().Where(s => s.Id == dto.Id).FirstOrDefaultAsync();
+            var existingStudent = await _studentRepository.GetByIDAsync(dto.Id,true);
 
             if (existingStudent == null)
             {
                 return NotFound();
             }
 
-            //existingStudent.Studentname = model.Studentname;
-            //existingStudent.Email = model.Email;
-            //existingStudent.Address = model.Address;
-            //existingStudent.DOB = Convert.ToDateTime(model.DOB);
-
-
-
             //using asnotracking
             var newrecord = _mapper.Map<Student>(dto);
 
-            _dbContext.Students.Update(newrecord);
-
-           await _dbContext.SaveChangesAsync();
+            await _studentRepository.UpdateAsync(newrecord);
 
             return NoContent();
         }
@@ -223,7 +215,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent =await _dbContext.Students.Where(s => s.Id == id).FirstOrDefaultAsync();
+            var existingStudent = await _studentRepository.GetByIDAsync(id, true);
 
             if (existingStudent == null)
             {
@@ -238,12 +230,8 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-             //_mapper.Map<Student>(studentDTO,existingStudent)
-
-                _mapper.Map(studentDTO, existingStudent);
-
-
-            await _dbContext.SaveChangesAsync();
+             existingStudent=_mapper.Map<Student>(studentDTO);
+            await _studentRepository.UpdateAsync(existingStudent);
 
             return NoContent();
         }
@@ -268,7 +256,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _dbContext.Students.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var Student = await _studentRepository.GetByIDAsync(id);
 
             if (Student == null)
             {
@@ -276,8 +264,7 @@ namespace CollegeApi.Controllers
             }
             else
             {
-                _dbContext.Students.Remove(Student);
-              await  _dbContext.SaveChangesAsync();
+                await _studentRepository.DeleteAsync(Student);
                 return Ok(true);
             }
 

@@ -1,6 +1,7 @@
 using CollegeApi.Configurations;
 using CollegeApi.Data;
 using CollegeApi.MyLogging;
+using CollegeApi.Repository;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -37,6 +38,8 @@ builder.Services.AddSwaggerGen();
 
 //auto mapper configuration
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
+
+builder.Services.AddTransient<IStudentRepository,StudentRepository>();
 
 
 
