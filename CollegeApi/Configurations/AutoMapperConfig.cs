@@ -19,6 +19,14 @@ namespace CollegeApi.Configurations
             //congigurattion for transforming some propery
             //CreateMap<StudentDTO, Student>().ReverseMap().AddTransform<string>(n=>string.IsNullOrEmpty(n)?"No address found":n);
 
+            //congiguration for particular column
+            //CreateMap<StudentDTO, Student>()
+            //    .ReverseMap()
+            //    .ForMember(dest => dest.Address,
+            //        opt => opt.MapFrom(src =>
+            //            string.IsNullOrEmpty(src.Address) ? "No address found" : src.Address
+            //        ));
+
             CreateMap<StudentDTO, Student>().ReverseMap();
         }
     }
