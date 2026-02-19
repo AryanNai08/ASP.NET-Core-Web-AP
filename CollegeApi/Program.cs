@@ -39,7 +39,9 @@ builder.Services.AddSwaggerGen();
 //auto mapper configuration
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
-builder.Services.AddTransient<IStudentRepository,StudentRepository>();
+builder.Services.AddScoped<IStudentRepository,StudentRepository>();
+
+builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository<>));
 
 
 
