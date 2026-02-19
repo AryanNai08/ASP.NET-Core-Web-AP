@@ -7,9 +7,9 @@ namespace CollegeApi.Repository
     {
         Task<List<T>> GetAllAsync();
 
-        Task<T> GetByIDAsync(Expression<Func<T, bool>> filter, bool useNotracking = false);
+        Task<T> GetAsync(Expression<Func<T, bool>> filter, bool useNotracking = false);
 
-        Task<T> GetByNameAsync(Expression<Func<T, bool>> filter);
+        //Task<T> GetByNameAsync(Expression<Func<T, bool>> filter);
 
         Task<T> CreateAsync(T dbrecord);
 

@@ -19,6 +19,8 @@ namespace CollegeApi.Controllers
         
         private readonly IMapper _mapper;
 
+        //private readonly ICollegeRepository<Student> _studentRepository;
+
         private readonly IStudentRepository _studentRepository;
         public StudentController(ILogger<StudentController> logger, IMapper mapper, IStudentRepository studentRepository)
         {
@@ -89,7 +91,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _studentRepository.GetByIDAsync(id);
+            var Student = await _studentRepository.GetAsync(student => student.Id == id);
 
             if (Student == null)
             {
@@ -124,7 +126,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _studentRepository.GetByNameAsync(name);
+            var Student = await _studentRepository.GetAsync(student => student.Studentname.ToLower().Contains(name.ToLower()));
 
             if (Student == null)
             {
@@ -155,9 +157,9 @@ namespace CollegeApi.Controllers
 
             Student student = _mapper.Map<Student>(dto);
 
-            var id=await _studentRepository.CreateAsync(student);
+            var studentAfterCreation=await _studentRepository.CreateAsync(student);
 
-            dto.Id = id;
+            dto.Id = studentAfterCreation.Id;
             //link/location of newly created data
             //status code=201
             return CreatedAtRoute("GetStudentByid", new {id=dto.Id},dto);
@@ -181,7 +183,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent = await _studentRepository.GetByIDAsync(dto.Id,true);
+            var existingStudent = await _studentRepository.GetAsync(student => student.Id == dto.Id, true);
 
             if (existingStudent == null)
             {
@@ -215,7 +217,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var existingStudent = await _studentRepository.GetByIDAsync(id, true);
+            var existingStudent = await _studentRepository.GetAsync(student => student.Id == id, true);
 
             if (existingStudent == null)
             {
@@ -256,7 +258,7 @@ namespace CollegeApi.Controllers
                 return BadRequest();
             }
 
-            var Student = await _studentRepository.GetByIDAsync(id);
+            var Student = await _studentRepository.GetAsync(student => student.Id == id);
 
             if (Student == null)
             {

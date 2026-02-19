@@ -35,7 +35,7 @@ namespace CollegeApi.Repository
             return await _dbset.ToListAsync();
         }
 
-        public async Task<T> GetByIDAsync(Expression<Func<T,bool>> filter, bool useNotracking = false)
+        public async Task<T> GetAsync(Expression<Func<T,bool>> filter, bool useNotracking = false)
         {
             if (useNotracking)
             {
@@ -48,12 +48,12 @@ namespace CollegeApi.Repository
 
         }
 
-        public async Task<T> GetByNameAsync(Expression<Func<T, bool>> filter)
-        {
-            return await _dbset
-                 .Where(filter)
-                 .FirstOrDefaultAsync();
-        }
+        //public async Task<T> GetByNameAsync(Expression<Func<T, bool>> filter)
+        //{
+        //    return await _dbset
+        //         .Where(filter)
+        //         .FirstOrDefaultAsync();
+        //}
 
         public async Task<T> UpdateAsync(T dbrecord)
         {
