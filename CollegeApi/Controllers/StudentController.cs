@@ -3,6 +3,7 @@ using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.Models;
 using CollegeApi.MyLogging;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,8 @@ namespace CollegeApi.Controllers
 {
     [Route("api/[controller]")] //Defines the base URL route
     [ApiController]//Marks the class as a Web API controller
+
+    [EnableCors(PolicyName = "AllowOnlyLocalhost")]
     public class StudentController : ControllerBase
     {
 

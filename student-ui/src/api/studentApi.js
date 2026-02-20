@@ -31,6 +31,9 @@ axios.defaults.headers.common["Accept"] = "application/json";
 
 export const getAllStudents = async () => {
   const response = await axios.get(`${STUDENT_URL}/All`);
+
+  //for preflight 
+  // const response1 = await axios.delete(`${STUDENT_URL}/All`);
   return response.data;
 };
 

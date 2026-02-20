@@ -3,6 +3,7 @@ using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System.Runtime.CompilerServices;
 
@@ -46,15 +47,48 @@ builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository
 
 
 //added cors
-builder.Services.AddCors(options => options.AddPolicy("MyTestCORS", policy =>
+builder.Services.AddCors(options =>
 {
-    //allowed all origin
-    //policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    // Named Policy: AllowAll - permits any origin
+    options.AddPolicy("AllowAll", policy =>
+    {
+        // For all origins
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
 
-    //allow only few origin
-    policy.WithOrigins("http://localhost:5173");
+    // Named Policy: AllowOnlyLocalhost - permits only localhost
+    options.AddPolicy("AllowOnlyLocalhost", policy =>
+    {
+        // For specific origin
+        policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod();
+    });
 
-}));
+    // Named Policy: AllowOnlyGoogle - permits Google domains
+    options.AddPolicy("AllowOnlyGoogle", policy =>
+    {
+        // For specific origins
+        policy.WithOrigins("http://google.com", "http://gmail.com", "http://drive.google.com")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+
+    // Named Policy: AllowOnlyMicrosoft - permits Microsoft domains
+    options.AddPolicy("AllowOnlyMicrosoft", policy =>
+    {
+        // For specific origins
+        policy.WithOrigins("http://outlook.com", "http://microsoft.com", "http://onedrive.com")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+
+    // Default Policy (uncomment to use)
+    //options.AddDefaultPolicy(policy =>
+    //{
+    //    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    //});
+});
+
+
 
 
 
@@ -79,7 +113,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //this line need to be added after routes and before authorization
-app.UseCors("MyTestCORS");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
