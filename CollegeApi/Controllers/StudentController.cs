@@ -246,6 +246,9 @@ namespace CollegeApi.Controllers
 
         //delete  single student details by id
         [HttpDelete("{id}", Name = "DeleteStudentById")]
+
+        //disable cors for this particular metho
+        [DisableCors]
         //api/student/delete/id
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
