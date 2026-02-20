@@ -4,6 +4,7 @@ using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using System.Runtime.CompilerServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,12 +46,15 @@ builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository
 
 
 //added cors
-//builder.Services.AddCors(options => options.AddPolicy("MyTestCORS", policy =>
-//{
-//    //allowed all origin
-//    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+builder.Services.AddCors(options => options.AddPolicy("MyTestCORS", policy =>
+{
+    //allowed all origin
+    //policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
 
-//}));
+    //allow only few origin
+    policy.WithOrigins("http://localhost:5173");
+
+}));
 
 
 
@@ -74,6 +78,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+//this line need to be added after routes and before authorization
+app.UseCors("MyTestCORS");
 
 app.UseAuthorization();
 

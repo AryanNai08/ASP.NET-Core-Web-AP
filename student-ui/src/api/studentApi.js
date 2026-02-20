@@ -34,7 +34,7 @@ export const getAllStudents = async () => {
   return response.data;
 };
 
-export const callMicrosoft1 = async () => {
-  const response = await axios.get(`${API_BASE}/Microsoft`);
-  return response.data;
-};
+// export const callMicrosoft1 = async () => {
+//   const response = await axios.get(`${API_BASE}/Microsoft`);
+//   return response.data;
+// };
