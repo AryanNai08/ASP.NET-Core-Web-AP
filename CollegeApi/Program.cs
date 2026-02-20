@@ -82,10 +82,10 @@ builder.Services.AddCors(options =>
     });
 
     // Default Policy (uncomment to use)
-    //options.AddDefaultPolicy(policy =>
-    //{
-    //    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    //});
+    // options.AddDefaultPolicy(policy =>
+    // {
+    //     policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    // });
 });
 
 
@@ -113,10 +113,24 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //this line need to be added after routes and before authorization
-app.UseCors("AllowAll");
+app.UseCors("MyTestCORS");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
