@@ -44,6 +44,15 @@ builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository<>));
 
 
+//added cors
+//builder.Services.AddCors(options => options.AddPolicy("MyTestCORS", policy =>
+//{
+//    //allowed all origin
+//    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+
+//}));
+
+
 
 // Singleton: Same instance throughout the app
 //builder.Services.AddSingleton<IMyLogger, LogToFile>();
