@@ -2,10 +2,13 @@ using CollegeApi.Configurations;
 using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Runtime.CompilerServices;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -89,7 +92,28 @@ builder.Services.AddCors(options =>
 });
 
 
+var key = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecret"));
 
+//Add Authentication Configuration (Default)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    //but make it false in production environment
+    //options.RequireHttpsMetadata = false;
+
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        // validate the signing key
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience =false
+    };
+});
 
 
 // Singleton: Same instance throughout the app
@@ -113,9 +137,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 //this line need to be added after routes and before authorization
-app.UseCors("MyTestCORS");
+app.UseRouting();
 
+app.UseCors("AllowAll");
 app.UseAuthorization();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGet("api/testingendpoint",
+        context => context.Response.WriteAsync("Test Response"))
+    .RequireCors("AllowOnlyLocalhost");
+
+    endpoints.MapControllers().RequireCors("AllowAll");
+
+    endpoints.MapGet("api/testendpoint2",
+        //context => context.Response.WriteAsync("Test response 1"));
+    context => context.Response.WriteAsync(builder.Configuration.GetValue<string>("JWTSecret")));
+});
 
 app.MapControllers();
 

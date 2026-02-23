@@ -3,6 +3,7 @@ using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.Models;
 using CollegeApi.MyLogging;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
@@ -13,8 +14,8 @@ namespace CollegeApi.Controllers
 {
     [Route("api/[controller]")] //Defines the base URL route
     [ApiController]//Marks the class as a Web API controller
-
-    [EnableCors(PolicyName = "AllowOnlyLocalhost")]
+    [Authorize(Roles ="Superadmin,Admin")]
+    //[EnableCors(PolicyName = "AllowOnlyLocalhost")]
     public class StudentController : ControllerBase
     {
 
@@ -44,6 +45,8 @@ namespace CollegeApi.Controllers
 
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+
+        //[AllowAnonymous]
         //Get all student details
         public async Task<ActionResult<IEnumerable<StudentDTO>>> GetStudent()
         {
