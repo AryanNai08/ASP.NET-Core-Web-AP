@@ -14,7 +14,10 @@ namespace CollegeApi.Controllers
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+
         public ActionResult Get()
         {
             return Ok("THis is microsoft");

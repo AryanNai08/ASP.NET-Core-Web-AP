@@ -4,10 +4,9 @@ using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Serilog;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,7 +36,33 @@ builder.Services.AddDbContext<CollegeDBContext>(options =>
 builder.Services.AddControllers().AddNewtonsoftJson();
 // 🔵 Add Swagger services
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the bearer scheme. Enter Bearer [space] add your token in the text inout. Example: Bearer $#&*@&DJHWWaihauhfu...",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Scheme = "Bearer"
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = ParameterLocation.Header
+            },
+            new List<string>()
+        }
+    });
+});
 
 
 
@@ -203,7 +228,7 @@ app.UseEndpoints(endpoints =>
     context => context.Response.WriteAsync(builder.Configuration.GetValue<string>("JWTSecretForLocal")));
 });
 
-app.MapControllers();
+//app.MapControllers();
 
 app.Run();
 
