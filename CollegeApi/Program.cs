@@ -49,6 +49,8 @@ builder.Services.AddScoped<IStudentRepository,StudentRepository>();
 builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository<>));
 
 
+
+
 //added cors
 builder.Services.AddCors(options =>
 {
@@ -98,8 +100,14 @@ var JWTSecretForGoogle = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<
 
 var JWTSecretForMicrosoft = Encoding.ASCII.GetBytes(builder.Configuration.GetValue<string>("JWTSecretForMicrosoft"));
 
+string GoogleAudience = builder.Configuration.GetValue<string>("GoogleAuidence");
 
+string MicrosoftAudience = builder.Configuration.GetValue<string>("MicrosoftAuidence");
 
+string LocalAudience = builder.Configuration.GetValue<string>("LocalAuidence");
+string GoogleIssuer = builder.Configuration.GetValue<string>("GoogleIssuer");
+string MicrosoftIssuer = builder.Configuration.GetValue<string>("MicrosoftIssuer");
+string LocalIssuer = builder.Configuration.GetValue<string>("LocalIssuer");
 //Add Authentication Configuration (Default)
 builder.Services.AddAuthentication(options =>
 {
@@ -116,8 +124,10 @@ builder.Services.AddAuthentication(options =>
         // validate the signing key
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(JWTSecretForGoogle),
-        ValidateIssuer = false,
-        ValidateAudience =false
+        ValidateIssuer = true,
+        ValidIssuer=GoogleIssuer,
+        ValidateAudience =true,
+        ValidAudience=GoogleAudience
     };
 }).AddJwtBearer("LoginForLocalUsers", options =>
 {
@@ -130,8 +140,10 @@ builder.Services.AddAuthentication(options =>
         // validate the signing key
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(JWTSecretForLocal),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateIssuer = true,
+        ValidIssuer = LocalIssuer,
+        ValidateAudience = true,
+        ValidAudience = LocalAudience
     };
 }).AddJwtBearer("LoginForMicrosoftUsers", options =>
 {
@@ -144,8 +156,10 @@ builder.Services.AddAuthentication(options =>
         // validate the signing key
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(JWTSecretForMicrosoft),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateIssuer = true,
+        ValidIssuer =MicrosoftIssuer,
+        ValidateAudience = true,
+        ValidAudience = MicrosoftAudience
     };
 });
 

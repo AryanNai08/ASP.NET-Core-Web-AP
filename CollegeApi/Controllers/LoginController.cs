@@ -31,19 +31,26 @@ namespace CollegeApi.Controllers
 
             LoginResponseDTO response = new() { Username = model.Username };
 
-
+            string issuer = string.Empty;
+            string audience = string.Empty; 
             byte[] key = null;
             if (model.Policy == "Local")
             {
+                issuer = _configuration.GetValue<string>("LocalIssuer");
+                audience = _configuration.GetValue<string>("LocalAuidence");
                 key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretForLocal")); 
             }
             else if (model.Policy == "Microsoft")
             {
-                key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretForGoogle"));
+                issuer = _configuration.GetValue<string>("MicrosoftIssuer");
+                audience = _configuration.GetValue<string>("MicrosoftAuidence");
+                key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretForMicrosoft"));
             }
             else if (model.Policy == "Google")
             {
-                key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretForMicrosoft"));
+                issuer = _configuration.GetValue<string>("GoogleIssuer");
+                audience = _configuration.GetValue<string>("GoogleAuidence");
+                key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("JWTSecretForGoogle"));
             }
 
 
@@ -59,9 +66,12 @@ namespace CollegeApi.Controllers
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var tokenDescriptor = new SecurityTokenDescriptor()
                 {
-                    
+                    Issuer = issuer,
+                    Audience = audience,
                     Subject = new System.Security.Claims.ClaimsIdentity(new Claim[]
                     {
+
+                        
                         //username
                         new Claim(ClaimTypes.Name, model.Username),
                         //role
@@ -69,7 +79,8 @@ namespace CollegeApi.Controllers
                                         
                     }),
                     Expires = DateTime.Now.AddHours(4),
-                    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature)
+                    SigningCredentials = new(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512Signature),
+                   
                 };
 
                 var token = tokenHandler.CreateToken(tokenDescriptor);

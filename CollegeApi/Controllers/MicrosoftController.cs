@@ -9,7 +9,7 @@ namespace CollegeApi.Controllers
     [ApiController]
     //With the [EnableCors] attribute.
     //[EnableCors(PolicyName = "AllowOnlyMicrosoft")]
-    [Authorize(AuthenticationSchemes ="LoginForMicrosoftUsers",Roles = "Superadmin,admin")]
+    [Authorize(AuthenticationSchemes ="LoginForMicrosoftUsers",Roles = "Superadmin,Admin")]
     public class MicrosoftController : ControllerBase
     {
         [HttpGet]
