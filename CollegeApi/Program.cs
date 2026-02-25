@@ -2,6 +2,7 @@ using CollegeApi.Configurations;
 using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.MyLogging;
+using CollegeApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -70,6 +71,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 
 builder.Services.AddScoped<IStudentRepository,StudentRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped(typeof(ICollegeRepository<>),typeof(CollegeRepository<>));
 
