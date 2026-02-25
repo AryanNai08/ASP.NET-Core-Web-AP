@@ -110,7 +110,7 @@ namespace CollegeApi.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetRolByIdAsync(int id)
+        public async Task<ActionResult<APIResponse>> GetRoleByIdAsync(int id)
         {
 
             try
@@ -151,14 +151,14 @@ namespace CollegeApi.Controllers
 
 
         [HttpGet]
-        [Route("{Name:alpha}", Name = "GetRolByName")]
+        [Route("{Name:alpha}", Name = "GetRoleByName")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<APIResponse>> GetRolByName(string Name)
+        public async Task<ActionResult<APIResponse>> GetRoleByName(string Name)
         {
 
             try
