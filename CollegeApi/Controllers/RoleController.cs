@@ -197,7 +197,7 @@ namespace CollegeApi.Controllers
         }
 
         [HttpPut]
-       [Route("Update")]
+        [Route("Update")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.Models;
 using CollegeApi.Services;
@@ -53,7 +54,8 @@ namespace CollegeApi.Controllers
             }
             catch (Exception ex)
             {
-                _apiResponse.Error = new List<string> { ex.Message };
+                var inner = ex.InnerException?.Message;
+                _apiResponse.Error = new List<string> { ex.Message, inner };
                 _apiResponse.StatusCode = HttpStatusCode.InternalServerError;
                 _apiResponse.Status = false;
                 return StatusCode(500, _apiResponse);
@@ -168,6 +170,69 @@ namespace CollegeApi.Controllers
                 return _apiResponse;
             }
 
+        }
+
+        [HttpPut]
+        [Route("Update")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        public async Task<ActionResult<APIResponse>> UpdateUserAsync(UserDTO dto)
+        {
+            try
+            {
+                if (dto == null || dto.Id <= 0)
+                    return BadRequest();
+
+                var result = await _userService.UpdateUserAsync(dto);
+
+                _apiResponse.Status = true;
+                _apiResponse.StatusCode = HttpStatusCode.OK;
+                _apiResponse.Data = result;
+
+                return Ok(_apiResponse);
+
+            }
+            catch (Exception ex)
+            {
+                _apiResponse.StatusCode = HttpStatusCode.InternalServerError;
+                _apiResponse.Status = false;
+                _apiResponse.Error.Add(ex.Message);
+                return _apiResponse;
+            }
+        }
+
+        [HttpDelete]
+        [Route("Delete/{id:int}", Name = "DeleteUserById")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<APIResponse>> DeleteUserAsync(int id)
+        {
+            try
+            {
+
+                var user = await _userService.DeleteUserAsync(id);
+
+                _apiResponse.Status = true;
+                _apiResponse.StatusCode = HttpStatusCode.OK;
+                _apiResponse.Data = user;
+
+                return Ok(_apiResponse);
+
+            }
+            catch (Exception ex)
+            {
+                _apiResponse.StatusCode = HttpStatusCode.InternalServerError;
+                _apiResponse.Status = false;
+                _apiResponse.Error.Add(ex.Message);
+                return _apiResponse;
+            }
         }
 
 

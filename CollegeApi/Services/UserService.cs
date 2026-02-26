@@ -4,6 +4,7 @@ using CollegeApi.Data;
 using CollegeApi.Data.Repository;
 using CollegeApi.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System.Security.Cryptography;
 
 namespace CollegeApi.Services
@@ -92,5 +93,54 @@ namespace CollegeApi.Services
 
             return _mapper.Map<UserReadonlyDTO>(user);
         }
+
+        public async Task<bool> UpdateUserAsync(UserDTO dto)
+        {
+            ArgumentNullException.ThrowIfNull(dto, nameof(dto));
+
+            var existingUser = await _userRepository.GetAsync(u => !u.IsDeleted && u.Id == dto.Id, true);
+            if (existingUser == null)
+            {
+                throw new Exception($"User not found with the id: {dto.Id}");
+            }
+
+            var userToUpdate = _mapper.Map<User>(dto);
+            userToUpdate.ModifiedDate = DateTime.Now;
+
+            //1. we will update only user information
+            //2. we need to provide separate method to update the password
+            //for the demo purpose i am updating the password
+
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                var passwordHash = CreatePasswordHashWithSalt(dto.Password);
+                userToUpdate.Password = passwordHash.PasswordHash;
+                userToUpdate.PasswordSalt = passwordHash.Salt;
+            }
+
+            await _userRepository.UpdateAsync(userToUpdate);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteUserAsync(int userId)
+        {
+            if (userId <= 0)
+                throw new ArgumentException(nameof(userId));
+
+            var existingUser = await _userRepository.GetAsync(u => !u.IsDeleted && u.Id == userId, true);
+            if (existingUser == null)
+            {
+                throw new Exception($"User not found with the id: {userId}");
+            }
+
+            //1. Hard delete - you can try this-delete record from table 
+            //2. Soft delete - we will do this now-just true the isdeleted column
+            existingUser.IsDeleted = true;
+
+            await _userRepository.UpdateAsync(existingUser);
+            return true;
+        }
+
     }
 }
